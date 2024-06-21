@@ -1,0 +1,12 @@
+[submodule "libzypp"]
+	path = libzypp
+	url = git@github.com:openSUSE/libzypp.git
+	branch = master
+[submodule "libsolv"]
+	path = libsolv
+	url = git@github.com:openSUSE/libsolv.git
+	branch = master
+[submodule "zypper"]
+	path = zypper
+	url = git@github.com:openSUSE/zypper.git
+	branch = master
