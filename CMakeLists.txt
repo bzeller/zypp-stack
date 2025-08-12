@@ -1,14 +1,14 @@
+cmake_minimum_required(VERSION 3.20)
 project(zypp-stack)
-cmake_minimum_required(VERSION 3.29)
 
 include(FetchContent)
 
 function ( enableOption opt )
-  set ( ${opt} TRUE CACHE BOOL "" FORCE )
+  set ( ${opt} TRUE CACHE BOOL "${enableOption} enabled via zypp-stack" FORCE )
 endfunction()
 
 function ( disableOption opt )
-  set ( ${opt} FALSE CACHE BOOL "" FORCE )
+  set ( ${opt} FALSE CACHE BOOL "${enableOption} disabled via zypp-stack" FORCE )
 endfunction()
 
 # This option will reroute all tool binaries to the libzypp build dir instead of taking those installed in the default directories.
@@ -17,7 +17,8 @@ OPTION (ENABLE_DEVEL_BUILD "Developer build, use zypp and solv binaries directly
 # tell the subproject they are part of a stack build
 set( ZYPP_STACK_BUILD TRUE )
 
-#libsolv build options
+# libsolv build options, these are the default settings on building for SUSE
+# distributions
 enableOption ( SUSE )
 enableOption ( CMAKE_VERBOSE_MAKEFILE )
 enableOption ( WITH_LIBXML2 )
@@ -37,7 +38,6 @@ enableOption ( USE_VENDORDIRS )
 
 add_subdirectory( libsolv )
 
-
 #prepare include tree for libzypp, libsolv project and install directory structure is too different otherwise
 file( MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/include/solv )
 
@@ -52,22 +52,26 @@ file( CREATE_LINK ${PROJECT_BINARY_DIR}/libsolv/src/solvversion.h ${PROJECT_BINA
 set( ZYPP_STACK_INCLUDE_DIRS ${PROJECT_BINARY_DIR}/include )
 
 #libzypp build options
-enableOption ( ENABLE_DEVEL_BUILD )
-enableOption ( ENABLE_BUILD_TESTS )
-enableOption ( ENABLE_BUILD_TRANS )
-enableOption ( ENABLE_BUILD_TRANS )
-enableOption ( ENABLE_VISIBILITY_HIDDEN )
-enableOption ( INSTALL_NG_BINARIES )
-disableOption ( ENABLE_UBSAN_CHECKS )
-enableOption ( ENABLE_DEVTOOL_REFRESHNG )
-enableOption ( ENABLE_ZCHUNK_COMPRESSION )
+enableOption  ( ENABLE_DEVEL_BUILD )
+enableOption  ( ENABLE_BUILD_TESTS )
+enableOption  ( ENABLE_BUILD_TRANS )
+enableOption  ( ENABLE_VISIBILITY_HIDDEN )
+enableOption  ( INSTALL_NG_BINARIES )
+disableOption  ( ENABLE_UBSAN_CHECKS )
+enableOption  ( ENABLE_ZCHUNK_COMPRESSION )
+disableOption ( DISABLE_MEDIABACKEND_TESTS )
+
+enableOption  ( ENABLE_LIBZYPPNG_BUILD )
+disableOption  ( ENABLE_DEVTOOL_REFRESHNG )
 
 add_subdirectory( libzypp )
 
-file( MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/include/zypp )
-file( CREATE_LINK ${PROJECT_BINARY_DIR}/libzypp/zypp/APIConfig.h ${PROJECT_BINARY_DIR}/include/zypp/APIConfig.h SYMBOLIC )
+file( MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/include/zypp-core )
+file( CREATE_LINK ${PROJECT_BINARY_DIR}/libzypp/zypp/zypp-logic/zypp-core/APIConfig.h ${PROJECT_BINARY_DIR}/include/zypp-core/APIConfig.h SYMBOLIC )
 
 add_subdirectory( zypper )
+
+add_subdirectory( zypp-solver-testcase-runner )
 
 #FetchContent_Declare(
 #  solv
@@ -77,7 +81,7 @@ add_subdirectory( zypper )
 #)
 
 #FetchContent_Declare(
-#  zyppa
+#  zypp
 #  SOURCE_DIR    ${PROJECT_SOURCE_DIR}/libzypp
 #  BINARY_DIR    ${PROJECT_BINARY_DIR}/libzypp
 #  PATCH_COMMAND git apply ${PROJECT_SOURCE_DIR}/libzypp.patch

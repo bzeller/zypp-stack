@@ -10,3 +10,7 @@
 	path = zypper
 	url = git@github.com:openSUSE/zypper.git
 	branch = master
+[submodule "zypp-solver-testcase-runner"]
+	path = zypp-solver-testcase-runner
+	url = https://github.com/openSUSE/zypp-solver-testcase-runner
+	branch = master
