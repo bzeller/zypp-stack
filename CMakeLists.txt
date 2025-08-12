@@ -57,12 +57,12 @@ enableOption  ( ENABLE_BUILD_TESTS )
 enableOption  ( ENABLE_BUILD_TRANS )
 enableOption  ( ENABLE_VISIBILITY_HIDDEN )
 enableOption  ( INSTALL_NG_BINARIES )
-disableOption  ( ENABLE_UBSAN_CHECKS )
 enableOption  ( ENABLE_ZCHUNK_COMPRESSION )
-disableOption ( DISABLE_MEDIABACKEND_TESTS )
-
 enableOption  ( ENABLE_LIBZYPPNG_BUILD )
+
+disableOption  ( ENABLE_UBSAN_CHECKS )
 disableOption  ( ENABLE_DEVTOOL_REFRESHNG )
+disableOption ( DISABLE_MEDIABACKEND_TESTS )
 
 add_subdirectory( libzypp )
 
