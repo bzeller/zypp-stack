@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.17)
 project(zypp-stack)
 
 include(FetchContent)
@@ -36,6 +36,8 @@ enableOption ( ENABLE_SUSEREPO )
 enableOption ( ENABLE_HELIXREPO )
 enableOption ( USE_VENDORDIRS )
 
+# libsolv overloads cmake_parse_arguments, setting this boolean prevents it
+set(__CMAKE_PARSE_ARGUMENTS_INCLUDED TRUE)
 add_subdirectory( libsolv )
 
 #prepare include tree for libzypp, libsolv project and install directory structure is too different otherwise
@@ -58,20 +60,22 @@ enableOption  ( ENABLE_BUILD_TRANS )
 enableOption  ( ENABLE_VISIBILITY_HIDDEN )
 enableOption  ( INSTALL_NG_BINARIES )
 enableOption  ( ENABLE_ZCHUNK_COMPRESSION )
-enableOption  ( ENABLE_LIBZYPPNG_BUILD )
-
-disableOption  ( ENABLE_UBSAN_CHECKS )
-disableOption  ( ENABLE_DEVTOOL_REFRESHNG )
+enableOption  ( BUILD_LIBZYPPNG )
+enableOption  ( BUILD_LIBZYPP )
+disableOption  ( ENABLE_CLANG_TIDY )
+disableOption ( ENABLE_UBSAN_CHECKS )
+disableOption ( ENABLE_DEVTOOL_REFRESHNG )
 disableOption ( DISABLE_MEDIABACKEND_TESTS )
 
 add_subdirectory( libzypp )
 
 file( MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/include/zypp-core )
-file( CREATE_LINK ${PROJECT_BINARY_DIR}/libzypp/zypp/zypp-logic/zypp-core/APIConfig.h ${PROJECT_BINARY_DIR}/include/zypp-core/APIConfig.h SYMBOLIC )
+file( CREATE_LINK ${PROJECT_BINARY_DIR}/libzypp/zypp/zypp/zypp-core/APIConfig.h ${PROJECT_BINARY_DIR}/include/zypp-core/APIConfig.h SYMBOLIC )
 
 add_subdirectory( zypper )
 
 add_subdirectory( zypp-solver-testcase-runner )
+
 
 #FetchContent_Declare(
 #  solv
